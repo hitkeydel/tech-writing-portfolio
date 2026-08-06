@@ -1,13 +1,13 @@
 # HL7 & EMR Integration Protocols
 
 ## 1. General Principles & Approval Hierarchy
-* **Order Processing**: Automatic processing creates services directly from incoming HL7 messages. Failed orders trigger a red **HL7 Requests** alert and require manual resolution.
-* **Report Filename Conventions**:
-  * Unidirectional interfaces: `[{DOS}][{PFN}][{SN}]_{TS}`
-  * Bidirectional interfaces: `{TS}`
-* **Approval Workflow**:
-  * **OpenText / PointClickCare Workflow**: Upon facility project readiness and OpenText confirmation, notify `user@name.com` to send a supplemental agreement to the client prior to activating report forwarding.
-  * **Non-OpenText EMR Workflow**: Notify `user@name.com` to initiate direct client agreement signing before facility connection.
+* **Order Processing:** Automatic processing creates services directly from incoming HL7 messages. Failed orders trigger a red **HL7 Requests** alert and require manual resolution.
+* **Report Filename Conventions:**
+  * **Unidirectional interfaces:** `[{DOS}][{PFN}][{SN}]_{TS}`
+  * **Bidirectional interfaces:** `{TS}`
+* **Approval Workflow:**
+  * **OpenText / PointClickCare Workflow:** Upon facility project readiness and OpenText confirmation, notify `legal-ops@company.com` to send a supplemental agreement to the client prior to activating report forwarding.
+  * **Non-OpenText EMR Workflow:** Notify `legal-ops@company.com` to initiate direct client agreement signing before facility connection.
 
 ---
 
