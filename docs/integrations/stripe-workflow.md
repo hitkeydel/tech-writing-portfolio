@@ -13,10 +13,12 @@
 ## 2. Payment Processing Workflow
 
 ### 2.1 Scope & Capabilities
-Stripe integration allows charging credit/debit cards for:
-* Patients (Self-pay / Copay / Deductible)
-* Referring Facilities (B2B commercial credit cards)
-* Insurance Payers
+
+Stripe integration supports processing credit and debit card transactions for:
+
+* **Patients:** Self-pay, copay, and deductible payments.
+* **Referring Facilities:** B2B commercial credit card processing.
+* **Insurance Payers:** Direct card-based reimbursement collection.
 
 ### 2.2 Execution Steps
 1. Open the target study record and navigate to **`Billing Info`**.
