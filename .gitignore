@@ -1,0 +1,16 @@
+﻿.venv/
+site/
+__pycache__/
+.cache/
+DLLs/
+Doc/
+include/
+Lib/
+libs/
+Scripts/
+share/
+tcl/
+Tools/
+*.exe
+*.dll
+*.txt

@@ -1,0 +1,156 @@
+openapi: 3.0.3
+info:
+  title: Billing Integration API
+  description: Technical specification for external payment processing and claim operations.
+  version: 1.0.0
+servers:
+  - url: https://api.billing-system.com/v1
+    description: Production Server
+  - url: https://sandbox.billing-system.com/v1
+    description: Staging / Sandbox Server
+
+paths:
+  /payments/charge:
+    post:
+      summary: Execute Credit Card Payment
+      description: Charges a credit/debit card via the configured payment gateway (e.g., Stripe) and posts the transaction balance.
+      operationId: chargePayment
+      security:
+        - BearerAuth: []
+        - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentRequest'
+      responses:
+        '200':
+          description: Payment successful and posted to billing ledger.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentResponse'
+        '400':
+          description: Invalid request parameters or payload formatting error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Authentication failed. Invalid or expired token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Payment gateway processing failure (e.g., declined card, insufficient funds).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server failure or gateway timeout.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+
+  schemas:
+    PaymentRequest:
+      type: object
+      required:
+        - study_id
+        - amount
+        - currency
+        - card_number
+        - exp_month
+        - exp_year
+        - cvc
+      properties:
+        study_id:
+          type: integer
+          example: 437
+          description: Target study/service ID in system ledger.
+        payer_type:
+          type: string
+          enum: [Patient, Facility, Insurance]
+          default: Patient
+          example: Patient
+        amount:
+          type: number
+          format: float
+          example: 200.00
+          description: Amount to charge in major currency units.
+        currency:
+          type: string
+          example: USD
+          minLength: 3
+          maxLength: 3
+        card_number:
+          type: string
+          example: "4242424242424242"
+          pattern: '^[0-9]{13,19}$'
+        exp_month:
+          type: integer
+          example: 11
+          minimum: 1
+          maximum: 12
+        exp_year:
+          type: integer
+          example: 2028
+        cvc:
+          type: string
+          example: "123"
+          pattern: '^[0-9]{3,4}$'
+        cardholder_name:
+          type: string
+          example: "ONE TEST"
+
+    PaymentResponse:
+      type: object
+      properties:
+        transaction_id:
+          type: string
+          example: "txn_3MvL2eLkdIWx5cG01x"
+        status:
+          type: string
+          enum: [succeeded, pending, failed]
+          example: "succeeded"
+        amount_charged:
+          type: number
+          format: float
+          example: 200.00
+        balance_remaining:
+          type: number
+          format: float
+          example: 195.00
+        created_at:
+          type: string
+          format: date-time
+          example: "2026-08-06T07:10:00Z"
+
+    ErrorResponse:
+      type: object
+      properties:
+        error_code:
+          type: string
+          example: "CARD_DECLINED"
+        message:
+          type: string
+          example: "Your card has insufficient funds."
+        timestamp:
+          type: string
+          format: date-time
+          example: "2026-08-06T07:10:00Z"
